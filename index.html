@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -25,14 +26,22 @@
 <body>
 <!-- 背景音乐自动播放 -->
 <audio id="bgm" src="https://sf5-hl-cdn-tos.douyinstatic.com/obj/ies-music/7499771397531503370.mp3" loop autoplay></audio>
+<!-- 背景音乐自动播放 -->
+<audio id="bgm" src="https://sf5-hl-cdn-tos.douyinstatic.com/obj/ies-music/7499771397531503370.mp3" loop autoplay></audio>
 <script>
-  // 背景音乐自动播放兼容处理
-  window.addEventListener('DOMContentLoaded', function() {
+
+  // 背景音乐自动播放兼容处理（支持微信/支付宝/主流浏览器/用户首次点击）
+  function tryPlayAudio() {
     var audio = document.getElementById('bgm');
     if (audio) {
       audio.play().catch(function(){});
     }
-  });
+  }
+  window.addEventListener('DOMContentLoaded', tryPlayAudio);
+  document.addEventListener('WeixinJSBridgeReady', tryPlayAudio, false);
+  document.addEventListener('AlipayJSBridgeReady', tryPlayAudio, false);
+  window.addEventListener('click', tryPlayAudio, { once: true });
+  window.addEventListener('touchstart', tryPlayAudio, { once: true });
 
   const tips = [
     '多喝水哦~', '保持微笑呀', '每天都要元气满满',
