@@ -84,14 +84,16 @@
 </head>
 <body>
 <!-- 背景音乐 -->
-<audio id="bgm" src="https://sf5-hl-cdn-tos.douyinstatic.com/obj/ies-music/7499771397531503370.mp3" loop preload="auto"></audio>
+<!-- 使用本地文件 bgm.mp3（请把你下载的 mp3 放到此项目根目录并命名为 bgm.mp3） -->
+<!-- 临时显示 controls 以便调试：页面确认后可删除 controls 属性 -->
+<audio id="bgm" src="bgm.mp3" loop preload="auto"></audio>
 
 <!-- 弹窗遮罩层 -->
 <div id="mask">
   <div id="popup">
     <div id="popup-header">
-      <span class="popup-icon">🎃</span>
-      神秘的礼物
+  <span class="popup-icon">🎃</span>
+  神秘的礼物
     </div>
     <div id="popup-desc">
       您有一份神秘礼物，确定要打开吗？
@@ -102,10 +104,23 @@
 
 <!-- 主体内容 -->
 <div id="main-content">
-  <!-- 卡片内容将被动态添加 -->
+  <!-- 你的原有内容、提示墙等 -->
+  <!-- ... -->
 </div>
 
 <script>
+  // 弹窗按钮点击
+  var confirmed = false;
+  document.getElementById('popup-btn').onclick = function() {
+    // 隐藏弹窗，显示主 content
+    document.getElementById('mask').style.display = 'none';
+    document.getElementById('main-content').style.display = 'block';
+    confirmed = true;
+    // 播放音乐
+    var audio = document.getElementById('bgm');
+    audio.play && audio.play();
+  };
+
   // 支持 enter 键触发
   document.addEventListener('keydown', function(e){
     if(document.getElementById('mask').style.display !== 'none' && (e.key==='Enter'||e.keyCode===13)){
@@ -113,7 +128,7 @@
     }
   });
 
-  // 微信/支付宝浏览器兼容
+  // 微信/支付宝兼容
   function tryPlayAudio() {
     var audio = document.getElementById('bgm');
     if (audio) audio.play().catch(function(){});
@@ -121,12 +136,16 @@
   document.addEventListener('WeixinJSBridgeReady', tryPlayAudio, false);
   document.addEventListener('AlipayJSBridgeReady', tryPlayAudio, false);
 
-  // 主内容初始化逻辑，封装成函数
-  function initTips() {
+  // 原有内容初始化逻辑
+  window.onload = function(){
+    // 页面内容放到#main-content里，初始化内容
+    // 移动你原来的JS内容到这里
+    // 这里只在弹窗关闭后才显示
+    // 下面是原本的内容拷贝
     const tips = [
       '多喝水哦~', '保持微笑呀', '每天都要元气满满',
       '记得吃水果', '保持好心情', '好好爱自己', '我想你了',
-      '梦想成真', '期待下一次见面', '金榜题名',
+      '梦想成真', '期待下一次见面', '好好吃饭',
       '顺顺利利', '早点休息', '愿所有烦恼都消失',
       '别熬夜', '今天过得开心嘛', '天冷了，多穿衣服'
     ];
@@ -155,6 +174,7 @@
       }, 3000);
     }
 
+    // 自动连续生成最多 50 条（仅在用户确认后开始）
     let count = 0;
     const maxTips = 50;
     const interval = setInterval(() => {
@@ -162,27 +182,12 @@
         clearInterval(interval);
         return;
       }
-      createTip(tips[Math.floor(Math.random() * tips.length)]);
-      count++;
+      if (confirmed) {
+        createTip(tips[Math.floor(Math.random() * tips.length)]);
+        count++;
+      }
     }, 300);
   }
-
-  // 弹窗按钮点击
-  document.getElementById('popup-btn').onclick = function() {
-    var audio = document.getElementById('bgm');
-    if (audio) {
-      audio.currentTime = 0;
-      audio.muted = false;
-      // play()必须在用户交互事件内直接调用
-      audio.play().catch(function(e){
-        // 部分浏览器有自动播放限制，可以适当提示用户
-        alert("浏览器限制自动播放，请手动允许播放音乐或解除静音~");
-      });
-    }
-    document.getElementById('mask').style.display = 'none';
-    document.getElementById('main-content').style.display = 'block';
-    initTips();
-  };
 </script>
 </body>
 </html>
