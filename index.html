@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>温馨提示墙</title>
+<style>
+  body {
+    background-color: #eef6ff;
+    overflow: hidden;
+    margin: 0;
+    height: 100vh;
+    font-family: "Microsoft YaHei";
+  }
+  .card {
+    position: absolute;
+    padding: 10px 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    font-weight: bold;
+    transition: top 3s, left 3s, background-color 2s;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<script>
+  const tips = [
+    '多喝水哦~', '保持微笑呀', '每天都要元气满满',
+    '记得吃水果', '保持好心情', '好好爱自己', '我想你了',
+    '梦想成真', '期待下一次见面', '金榜题名',
+    '顺顺利利', '早点休息', '愿所有烦恼都消失',
+    '别熬夜', '今天过得开心嘛', '天冷了，多穿衣服'
+  ];
+  const colors = [
+    'lightpink', 'skyblue', 'lightgreen', 'lavender',
+    'lightyellow', 'plum', 'coral', 'bisque', 'aquamarine',
+    'mistyrose', 'honeydew', 'lavenderblush', 'oldlace'
+  ];
+
+  function createTip(text) {
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerText = text;
+    div.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    div.style.top = Math.random() * 80 + '%';
+    div.style.left = Math.random() * 80 + '%';
+    document.body.appendChild(div);
+    moveTip(div);
+  }
+
+  function moveTip(div) {
+    setInterval(() => {
+      div.style.top = Math.random() * 80 + '%';
+      div.style.left = Math.random() * 80 + '%';
+      div.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    }, 3000);
+  }
+
+  // 自动连续生成最多 50 条
+  let count = 0;
+  const maxTips = 50;
+  const interval = setInterval(() => {
+    if (count >= maxTips) {
+      clearInterval(interval);
+      return;
+    }
+    createTip(tips[Math.floor(Math.random() * tips.length)]);
+    count++;
+  }, 300);
+</script>
+</body>
+</html>
