@@ -19,6 +19,7 @@
     font-weight: bold;
     transition: top 3s, left 3s, background-color 2s;
     text-align: center;
+    z-index: 1000;
   }
   /* 弹窗遮罩和样式 */
   #mask {
@@ -104,10 +105,12 @@
 
 <script>
   // 弹窗按钮点击
+  var confirmed = false;
   document.getElementById('popup-btn').onclick = function() {
-    // 隐藏弹窗，显示主内容
+    // 隐藏弹窗，显示主 content
     document.getElementById('mask').style.display = 'none';
-    document.getElementById('main-content').style.display = '';
+    document.getElementById('main-content').style.display = 'block';
+    confirmed = true;
     // 播放音乐
     var audio = document.getElementById('bgm');
     audio.play && audio.play();
@@ -166,7 +169,7 @@
       }, 3000);
     }
 
-    // 自动连续生成最多 50 条
+    // 自动连续生成最多 50 条（仅在用户确认后开始）
     let count = 0;
     const maxTips = 50;
     const interval = setInterval(() => {
@@ -174,7 +177,7 @@
         clearInterval(interval);
         return;
       }
-      if(document.getElementById('main-content').style.display !== 'none'){
+      if (confirmed) {
         createTip(tips[Math.floor(Math.random() * tips.length)]);
         count++;
       }
